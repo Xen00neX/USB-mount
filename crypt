@@ -1,0 +1,32 @@
+#!/bin/bash
+#I Stole This
+
+mp=$3
+uuid=""
+
+case $2 in
+	"0")
+		uuid="7918735e-4300-479a-8003-01539175911e" #PW's
+		;;
+esac
+
+if [[ $uuid == "" ]]; then
+	echo "This One Doesnt Work"
+fi
+
+case $1 in
+    "m")
+        echo "Authorizing encrypted partition /dev/mapper/$mp..."
+        sudo cryptsetup luksOpen /dev/disk/by-uuid/$uuid $mp
+        echo -n "Mounting partition on /mnt/$mp..."
+        sudo mount -t ext4 /dev/mapper/$mp /mnt/$mp && echo "done."
+        ;;
+    "u")
+        echo -n "Unmounting /mnt/$mp..."
+        sudo umount /mnt/$mp && echo "done."
+        echo -n "Closing encrypted partition /dev/mapper/$mp..."
+        sudo cryptsetup luksClose $mp && echo "done."
+        ;;
+    *)
+        ;;
+esac
